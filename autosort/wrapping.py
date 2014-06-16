@@ -1,11 +1,11 @@
 def _dynamic_wrap(items, limit):
     scores, trace = [0], []
     for j in range(len(items)):
-        best, psum, index = 0, limit, -1
+        best, psum, index = float('inf'), limit, -1
         for i in reversed(range(j + 1)):
             psum -= items[i]
             score = scores[i] + psum ** 2
-            if i == j or score < best and psum >= 0:
+            if score < best and (psum >= 0 or i == j):
                 best = score
                 index = i
 

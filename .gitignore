@@ -1,3 +1,5 @@
 *.pyc
+dist
+build
 .tox
 autosort.egg-info

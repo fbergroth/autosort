@@ -1,4 +1,4 @@
-from autosort.wrapping import _dynamic_wrap
+from autosort.formatting import _dynamic_wrap
 
 
 def test_dynamic_wrapping():

@@ -1,5 +1,5 @@
 import os
-from collections import defaultdict, OrderedDict
+from collections import defaultdict
 
 from .parsing import parse_imports
 from .formatting import format_group
@@ -9,7 +9,7 @@ from .config import get_config
 
 def sort_imports(source, path):
     config = get_config(path)
-    lines = source.splitlines(keepends=True)
+    lines = source.splitlines(True)
     diff = []
     for block in parse_imports(lines):
         diff += [(im.start, im.end, []) for im in block.imports]
@@ -38,7 +38,7 @@ def split_regular_imports(imports, config):
     for im in imports:
         result[classify_import(im, config)].append(im)
 
-    return OrderedDict(result).values()
+    return [result[key] for key in sorted(result.keys())]
 
 
 def classify_import(im, config):

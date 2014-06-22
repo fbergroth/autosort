@@ -1,10 +1,9 @@
-import os
 from collections import defaultdict
 
-from .parsing import parse_imports
-from .formatting import format_group
-from .utils import interpose
 from .config import get_config
+from .formatting import format_group
+from .parsing import parse_imports
+from .utils import interpose
 
 
 def sort_imports(source, path):

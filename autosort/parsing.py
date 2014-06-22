@@ -2,7 +2,7 @@ import ast
 import textwrap
 import tokenize
 from collections import namedtuple
-from tokenize import COMMENT, DEDENT, ENDMARKER, INDENT, NEWLINE, STRING, NAME
+from tokenize import COMMENT, DEDENT, ENDMARKER, INDENT, NAME, NEWLINE, STRING
 
 
 class Name(namedtuple('Name', 'name asname')):

@@ -1,8 +1,7 @@
-from autosort.sorting import sort_imports
-
+import os
 from textwrap import dedent
 
-import os
+from autosort.sorting import sort_imports
 
 
 def test_regular():

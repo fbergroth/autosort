@@ -61,7 +61,7 @@ def flatten(imports):
     result = {}
     for im in imports:
         result[im.module] = result.get(im.module, im).merge(im)
-    return result.values()
+    return sorted(result.values())
 
 
 def sort_group(group, indent, config):

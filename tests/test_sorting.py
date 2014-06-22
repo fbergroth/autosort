@@ -46,6 +46,35 @@ def test_sort_multiple_levels():
     ''')
 
 
+def test_skip_docstring():
+    path = os.path.abspath('test.py')
+    rv = sort_imports(dedent('''\
+    """
+        module docstring
+    """
+    import a
+    def f():
+        """Function docstring."""
+        import e
+        x = 2
+        import b
+    import f
+    '''), path)
+
+    assert rv == dedent('''\
+    """
+        module docstring
+    """
+    import a
+    import f
+    def f():
+        """Function docstring."""
+        import b
+        import e
+        x = 2
+    ''')
+
+
 def test_explicit_line_joinings():
     path = os.path.abspath('test.py')
     rv = sort_imports(dedent('''\

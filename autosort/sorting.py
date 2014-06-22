@@ -43,9 +43,9 @@ def split_regular_imports(imports, config):
 
 def classify_import(im, config):
     DUNDER, STDLIB, THIRDPARTY, LOCAL, RELATIVE = range(5)
-    name = im.module.name.split('.')[0]
+    name = str(im.module.name).split('.')[0]
 
-    if name == '':
+    if im.module.level > 0:
         return RELATIVE
     if name in config['local_modules']:
         return LOCAL

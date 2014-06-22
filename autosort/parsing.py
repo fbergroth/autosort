@@ -26,6 +26,11 @@ class Name(namedtuple('Name', 'name asname')):
         return self.name
 
 
+class Module(namedtuple('Module', 'name level')):
+    def __str__(self):
+        return '{0}{1}'.format('.' * self.level, self.name)
+
+
 class Import(namedtuple('Import', 'kind module names noqa start end')):
 
     def merge(self, other):
@@ -101,8 +106,8 @@ class _ImportParser(namedtuple('_ImportParser', 'tokens lines')):
         names = sorted([Name(n.name, n.asname)
                         for n in node.names], key=Name.key)
         if kind == 'from':
-            modules = [Name(node.module, None)]
+            modules = [Module(Name(node.module, None), node.level)]
         else:
-            modules, names = names, []
+            modules, names = [Module(name, 0) for name in names], []
 
         return [Import(kind, m, names, noqa, start, end) for m in modules]

@@ -39,14 +39,14 @@ def format_from(im, limit):
     first += '('
     size = len(first)
     lines = [' ' * size + ', '.join(names[start:end]) + ','
-             for start, end in _dynamic_wrap(sizes, limit - size)]
+             for start, end in dynamic_wrap(sizes, limit - size)]
 
     lines[0] = first + lines[0][size:]
     lines[-1] = lines[-1][:-1] + ')'
     return lines
 
 
-def _dynamic_wrap(items, limit):
+def dynamic_wrap(items, limit):
     scores, trace = [0], []
     for j in range(len(items)):
         best, index = float('inf'), -1
@@ -60,10 +60,10 @@ def _dynamic_wrap(items, limit):
         scores.append(best)
         trace.append(index)
 
-    return _build_indices(trace)
+    return build_indices(trace)
 
 
-def _build_indices(trace):
+def build_indices(trace):
     indices, index = [], len(trace) - 1
     while index >= 0:
         indices.append((trace[index], index + 1))

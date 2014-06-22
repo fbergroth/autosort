@@ -12,7 +12,8 @@ def sort_imports(source, path):
     diff = []
     ADD, REMOVE = range(2)
     for block in parse_imports(lines):
-        diff += [(REMOVE, im.start, im.end, []) for im in block.imports]
+        diff += [(REMOVE, start, end, [])
+                 for start, end in removals(block.imports, lines)]
         diff += [(ADD, line, line, rows)
                  for line, rows in organize_block(block, lines, config)]
 
@@ -20,6 +21,16 @@ def sort_imports(source, path):
         lines[start:end] = change
 
     return ''.join(lines)
+
+
+def removals(imports, lines):
+    for im in imports:
+        yield im.start, im.end
+
+    for im1, im2 in zip(imports, imports[1:]):
+        start, end = im1.end, im2.start
+        if all(line == '\n' for line in lines[start:end]):
+            yield start, end
 
 
 def organize_block(block, lines, config):

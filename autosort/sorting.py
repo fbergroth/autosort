@@ -11,12 +11,13 @@ def sort_imports(source, path):
     config = get_config(path)
     lines = source.splitlines(True)
     diff = []
+    ADD, REMOVE = range(2)
     for block in parse_imports(lines):
-        diff += [(im.start, im.end, []) for im in block.imports]
-        diff += [(line, line, rows)
+        diff += [(REMOVE, im.start, im.end, []) for im in block.imports]
+        diff += [(ADD, line, line, rows)
                  for line, rows in organize_block(block, lines, config)]
 
-    for start, end, change in sorted(diff, reverse=True):
+    for kind, start, end, change in sorted(diff, reverse=True):
         lines[start:end] = change
 
     return ''.join(lines)

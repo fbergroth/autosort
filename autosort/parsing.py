@@ -73,7 +73,7 @@ class _ImportParser(namedtuple('_ImportParser', 'tokens lines')):
 
         # Push imports beneath docstring
         if token.type == STRING:
-            start = token.end[0] + 1
+            start = token.end[0]
             token = next(self.tokens)
 
         while not token.ends_block:

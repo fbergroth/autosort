@@ -44,3 +44,15 @@ def test_sort_multiple_levels():
             import d
             stmt = 4
     ''')
+
+
+def test_explicit_line_joinings():
+    path = os.path.abspath('test.py')
+    rv = sort_imports(dedent('''\
+    from x import a as b, cc, \\
+           d as e, e as f, g
+    '''), path)
+
+    assert rv == dedent('''\
+    from x import a as b, cc, d as e, e as f, g
+    ''')

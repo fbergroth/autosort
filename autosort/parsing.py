@@ -95,7 +95,7 @@ class _ImportParser(namedtuple('_ImportParser', 'tokens lines')):
             token = next(self.tokens)
 
         start, end = first.start[0] - 1, token.end[0]
-        source = '\n'.join(self.lines[start:end])
+        source = ''.join(self.lines[start:end])
         nodes = ast.parse(textwrap.dedent(source)).body
         # TODO: error on multiple nodes
         return self._make_imports(first.name, nodes[0], comments, start, end)

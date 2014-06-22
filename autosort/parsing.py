@@ -47,8 +47,9 @@ def parse_imports(lines):
     tokens = (_TokenInfo(*token) for token in
               tokenize.generate_tokens(lambda: next(it)))
 
-    parser = _ImportParser(tokens, lines)
-    return parser.parse_block('', 0)
+    result = []
+    _ImportParser(tokens, lines).parse_block('', 0, result)
+    return result
 
 
 class _TokenInfo(namedtuple('TokenInfo', 'type string start end line')):
@@ -66,7 +67,7 @@ class _TokenInfo(namedtuple('TokenInfo', 'type string start end line')):
 
 
 class _ImportParser(namedtuple('_ImportParser', 'tokens lines')):
-    def parse_block(self, indent, start):
+    def parse_block(self, indent, start, result):
         imports = []
         token = next(self.tokens)
 
@@ -77,14 +78,13 @@ class _ImportParser(namedtuple('_ImportParser', 'tokens lines')):
 
         while not token.ends_block:
             if token.starts_block:
-                self.parse_block(token.string, token.start[0] - 1)
+                self.parse_block(token.string, token.start[0] - 1, result)
             elif token.name in ('from', 'import'):
                 imports += self.parse_imports(token)
             token = next(self.tokens)
 
         if imports:
-            # wrong
-            yield Block(imports, indent, start)
+            result.append(Block(imports, indent, start))
 
     def parse_imports(self, token):
         first = token

@@ -85,3 +85,14 @@ def test_explicit_line_joinings():
     assert rv == dedent('''\
     from x import a as b, cc, d as e, e as f, g
     ''')
+
+
+def test_relative_import():
+    path = os.path.abspath('test.py')
+    rv = sort_imports(dedent('''\
+    from . import x
+    '''), path)
+
+    assert rv == dedent('''\
+    from . import x
+    ''')

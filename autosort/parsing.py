@@ -106,7 +106,7 @@ class _ImportParser(namedtuple('_ImportParser', 'tokens lines')):
         names = sorted([Name(n.name, n.asname)
                         for n in node.names], key=Name.key)
         if kind == 'from':
-            modules = [Module(Name(node.module, None), node.level)]
+            modules = [Module(Name(node.module or '', None), node.level)]
         else:
             modules, names = [Module(name, 0) for name in names], []
 

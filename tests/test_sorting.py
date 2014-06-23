@@ -96,3 +96,19 @@ def test_relative_import():
     assert rv == dedent('''\
     from . import x
     ''')
+
+
+def test_source_with_header():
+    path = os.path.abspath('test.py')
+    rv = sort_imports(dedent('''\
+    #!/usr/bin/env python
+    # -*- coding: utf-8 -*-
+
+    import x
+    '''), path)
+
+    assert rv == dedent('''\
+    #!/usr/bin/env python
+    # -*- coding: utf-8 -*-
+    import x
+    ''')

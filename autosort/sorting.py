@@ -1,3 +1,4 @@
+import re
 from collections import defaultdict
 
 from .config import get_config
@@ -5,10 +6,13 @@ from .formatting import format_group
 from .parsing import parse_imports
 from .utils import interpose
 
+_is_encoding_decl = re.compile(r'coding[=:]\s*([-\w.]+)').search
+
 
 def sort_imports(source, path):
     config = get_config(path)
     lines = source.splitlines(True)
+    header = extract_header(lines)
     diff = []
     ADD, REMOVE = range(2)
     for block in parse_imports(lines):
@@ -20,7 +24,21 @@ def sort_imports(source, path):
     for start, kind, end, change in sorted(diff, reverse=True):
         lines[start:end] = change
 
-    return ''.join(lines)
+    return ''.join(header + lines)
+
+
+def extract_header(lines):
+    header = []
+    if lines and lines[0].startswith('#!'):
+        header.append(lines.pop(0))
+
+    if lines and _is_encoding_decl(lines[0]):
+        header.append(lines.pop(0))
+
+    while lines and lines[0] == '\n':
+        lines.pop(0)
+
+    return header
 
 
 def removals(imports, lines):

@@ -1,4 +1,5 @@
 import argparse
+import os
 import sys
 
 from .sorting import sort_imports
@@ -6,7 +7,7 @@ from .sorting import sort_imports
 
 def create_parser():
     parser = argparse.ArgumentParser(prog='autosort')
-    parser.add_argument('files', nargs='+')
+    parser.add_argument('files', nargs='+', help='files to sort')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='show verbose output')
     return parser
@@ -18,9 +19,20 @@ def parse_args(args):
     return args
 
 
+def find_pyfiles(paths):
+    for path in paths:
+        if os.path.isdir(path):
+            for dirpath, _, files in os.walk(path):
+                for file in files:
+                    if file.endswith('.py'):
+                        yield os.path.join(dirpath, file)
+        else:
+            yield path
+
+
 def main():
     args = parse_args(sys.argv[1:])
-    for file in args.files:
+    for file in find_pyfiles(args.files):
         with open(file) as f:
             input = f.read()
 

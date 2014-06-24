@@ -27,6 +27,21 @@ class Name(namedtuple('Name', 'name asname')):
 
 
 class Module(namedtuple('Module', 'name level')):
+    DUNDER, STDLIB, THIRDPARTY, LOCAL, RELATIVE = range(5)
+
+    def kind(self, config):
+        name = self.name.name.split('.')[0]
+
+        if self.level > 0:
+            return self.RELATIVE
+        if name in config['local_modules']:
+            return self.LOCAL
+        if name in config['dunders']:
+            return self.DUNDER
+        if name in config['stdlib']:
+            return self.STDLIB
+        return self.THIRDPARTY
+
     def __str__(self):
         return '{0}{1}'.format('.' * self.level, self.name)
 

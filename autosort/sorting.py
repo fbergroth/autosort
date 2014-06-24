@@ -1,10 +1,9 @@
 import re
-from collections import defaultdict
 
 from .config import get_config
 from .formatting import format_group
 from .parsing import parse_imports
-from .utils import interpose
+from .utils import interpose, ordered_subgroups
 
 _is_encoding_decl = re.compile(r'coding[=:]\s*([-\w.]+)').search
 
@@ -56,33 +55,10 @@ def organize_block(block, lines, config):
         return sort_group(group, block.indent, config)
 
     regular, groups = extract_groups(block, lines)
-    regulars = [sort(g) for g in split_regular_imports(regular, config)]
+    regulars = ordered_subgroups(regular, lambda im: im.module.kind(config))
 
     return ([(g[0].start, sort(g)) for g in groups] +
-            [(block.start, interpose(regulars, ['\n']))])
-
-
-def split_regular_imports(imports, config):
-    result = defaultdict(list)
-    for im in imports:
-        result[classify_import(im, config)].append(im)
-
-    return [result[key] for key in sorted(result.keys())]
-
-
-def classify_import(im, config):
-    DUNDER, STDLIB, THIRDPARTY, LOCAL, RELATIVE = range(5)
-    name = str(im.module.name).split('.')[0]
-
-    if im.module.level > 0:
-        return RELATIVE
-    if name in config['local_modules']:
-        return LOCAL
-    if name in config['dunders']:
-        return DUNDER
-    if name in config['stdlib']:
-        return STDLIB
-    return THIRDPARTY
+            [(block.start, interpose([sort(g) for g in regulars], ['\n']))])
 
 
 def flatten(imports):

@@ -19,6 +19,26 @@ def test_regular():
     ''')
 
 
+def test_name_order():
+    path = os.path.abspath('test.py')
+    rv = sort_imports(dedent('''\
+    from a import CONST, CamelCase, snake_case, _priv, __dunder
+    from ._priv import d
+    from .sub import e
+    from .. import f
+    from . import g
+    '''), path)
+
+    assert rv == dedent('''\
+    from a import CamelCase, snake_case, CONST, _priv, __dunder
+
+    from .. import f
+    from . import g
+    from .sub import e
+    from ._priv import d
+    ''')
+
+
 def test_sort_multiple_levels():
     path = os.path.abspath('test.py')
     rv = sort_imports(dedent('''\

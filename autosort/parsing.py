@@ -68,10 +68,10 @@ class _ImportParser(namedtuple('_ImportParser', 'tokens lines')):
     @staticmethod
     def _make_imports(kind, node, comments, start, end):
         noqa = any(c.startswith('# noqa') for c in comments)
-        names = sorted([Name(n.name, n.asname)
-                        for n in node.names], key=Name.key)
+        names = sorted([Name.from_str(n.name, n.asname) for n in node.names])
         if kind == 'from':
-            modules = [Module(Name(node.module or '', None), node.level)]
+            modules = [Module(Name.from_str(node.module or '', None),
+                              node.level)]
         else:
             modules, names = [Module(name, 0) for name in names], []
 
